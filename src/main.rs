@@ -2,6 +2,10 @@ use std::io::Read;
 use std::collections::HashMap;
 use rayon::prelude::*;
 
+use std::fs;
+
+use clap::{Arg, App};
+
 const OPCODES:&str= ".,[]<>+-";
 
 fn evaluate(code:String) {
@@ -72,11 +76,27 @@ fn build_brace_map(code: Vec<char>) -> HashMap<usize,usize> {
     } bmap
 }
 
-fn execute(filename:String) {
-    
+fn execute(filename:&str){
+    let contents = fs::read_to_string(filename)
+        .expect("cannot read file");
+    evaluate(contents);
 }
 
 
 fn main() {
+    let matches = App::new("bfrs")
+        .version("1.0")
+        .author("Ian Kim. <ian@ianmkim.com>")
+        .about("A lightning fast brainfuck interpreter written in Rust")
+        .arg(Arg::new("file")
+             .value_name("FILENAME")
+             .about("Brainfuck source file")
+             .required(true)
+             .index(1))
+        .get_matches();
+
+    if let Some(filename) = matches.value_of("file") {
+        execute(filename);
+    }
 }
 
