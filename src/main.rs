@@ -10,8 +10,7 @@ use clap::{Arg, App};
 
 const OPCODES:&str= ".,[]<>+-";
 
-fn evaluate(code:String, out:bool) {
-    let code = clean(code);
+fn evaluate_vec(code:Vec<char>, out:bool){
     let bmap = build_brace_map(code.clone());
 
     let mut cells:Vec<u8> = Vec::new();
@@ -53,7 +52,11 @@ fn evaluate(code:String, out:bool) {
             _ => {},
         } codeptr += 1;
     }
+}
 
+fn evaluate_str(code:String, out:bool) {
+    let code = clean(code);
+    evaluate_vec(code, out);    
 }
 
 fn clean(code:String) -> Vec<char>{
@@ -81,13 +84,25 @@ fn build_brace_map(code: Vec<char>) -> HashMap<usize,usize> {
 fn execute(filename:&str, out:bool){
     let contents = fs::read_to_string(filename)
         .expect("cannot read file");
-    evaluate(contents, out);
+    let cleaned = clean(contents); 
+    evaluate_vec(cleaned, out);
 }
 
+fn execute_directly_to_vec(filename: &str, out:bool){
+    let mut file = fs::File::open(filename).unwrap();
+    let bytes_count = 0i32;
+    let mut s: Vec<u8> = Vec::with_capacity(file.metadata().unwrap().len() as usize);
+    file.read_to_end(&mut s).unwrap();
+    let chars : Vec<char> = s.par_iter()
+        .map(|b| *b as char)
+        .filter(|&c| OPCODES.contains(c)) 
+        .collect::<Vec<_>>();
+    evaluate_vec(chars, false);
+}
 
 fn main() {
     let matches = App::new("bfrs")
-        .version("1.0")
+        .version("2.0")
         .author("Ian Kim. <ian@ianmkim.com>")
         .about("A lightning fast brainfuck interpreter written in Rust")
         .arg(Arg::new("file")
@@ -114,7 +129,7 @@ fn main() {
         for _ in 0..benchmark_num{
             bar.inc(1);
             let start = Instant::now();
-            execute(filename.clone(), false);
+            execute_directly_to_vec(filename.clone(), false);
             let duration = start.elapsed().subsec_nanos() as f64 / 1000000 as f64;
             time += duration;
         }
@@ -125,7 +140,7 @@ fn main() {
 
     } else {
         if let Some(filename) = matches.value_of("file") {
-            execute(filename, true);
+            execute_directly_to_vec(filename, true);
         }
     }
 }
