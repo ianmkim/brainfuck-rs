@@ -1,0 +1,3 @@
+#!/bin/bash
+
+time for i in {1..1000}; do python3 Python-Brainfuck/brainfuck.py examples/helloworld.bf; done

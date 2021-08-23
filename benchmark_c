@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd brainfuck
+rm -r build
+mkdir build 
+cd build
+cmake ..
+make -j$(nproc)
+cd ../../
+time for i in {1..1000}; do ./brainfuck/build/brainfuck examples/helloworld.bf; done

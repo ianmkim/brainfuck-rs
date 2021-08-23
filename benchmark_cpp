@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd Brainfuck-interpreter
+g++ bf-interpreter.cpp -std=c++11 -o bf-interpreter
+cd ../
+time for i in {1..1000}; do ./Brainfuck-interpreter/bf-interpreter examples/helloworld.bf; done

@@ -1,0 +1,9 @@
+[submodule "Python-Brainfuck"]
+	path = Python-Brainfuck
+	url = https://github.com/pocmo/Python-Brainfuck
+[submodule "brainfuck"]
+	path = brainfuck
+	url = https://github.com/fabianishere/brainfuck
+[submodule "Brainfuck-interpreter"]
+	path = Brainfuck-interpreter
+	url = https://github.com/texus/Brainfuck-interpreter
