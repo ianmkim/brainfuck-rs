@@ -7,3 +7,6 @@
 [submodule "Brainfuck-interpreter"]
 	path = Brainfuck-interpreter
 	url = https://github.com/texus/Brainfuck-interpreter
+[submodule "brainwhat"]
+	path = brainwhat
+	url = https://github.com/dmitmel/brainwhat

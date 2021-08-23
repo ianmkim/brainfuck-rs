@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd brainwhat
+cargo build
+cd ../
+time for i in {1..1000}; do ./brainwhat/target/debug/brainwhat examples/helloworld.bf; done 
+

@@ -5,19 +5,17 @@ A tiny & fast as fuck brainfuck interpreter written in Rust
 ### Brainfuck-rs 2.0 (Rust)
 https://github.com/parvusvox/brainfuck-rs
 ```
-cargo run examples/helloworld.bf --benchmark 10000
+cargo run examples/helloworld.bf --benchmark 1000
 ```
-Executing examples/helloworld.bf 1000 times:
- - Total execution time: 593.80 ms
- - Average execution time: 0.59 ms
+ - Total execution time: 576.61 ms
+ - Average execution time: 0.58 ms
 
 
 ### Brainfuck-rs 1.0 (Rust)
 https://github.com/parvusvox/brainfuck-rs @ commit e7a53718e1f1869e984c02824d9b65f9b5c31ed2
 ```
-cargo run examples/helloworld.bf --benchmark 10000
+cargo run examples/helloworld.bf --benchmark 1000
 ```
-Executing examples/helloworld.bf 1000 times:
  - Total execution time: 624.83 ms
  - Average execution time: 0.62 ms
 
@@ -28,7 +26,6 @@ https://github.com/pocmo/Python-Brainfuck
 chmod +x benchmark_py
 ./benchmark_py
 ```
-Executing examples/helloworld.bf 1000 times
  - Total execution time: 11494.40 ms 
  - Average execution time: 11.49 ms
 
@@ -39,7 +36,6 @@ https://github.com/fabianishere/brainfuck
 chmod +x benchmark_c
 ./benchmark_c
 ```
-Executing examples/helloworld.bf 1000 times
  - Total execution time: 557.00 ms
  - Average execution time: 0.56 ms
 
@@ -50,7 +46,6 @@ https://github.com/texus/Brainfuck-interpreter
 chmod +x benchmark_cpp
 ./benchmark_cpp
 ```
-Executing examples/helloworld.bf 1000 times
  - Total execution time: 1958.00 ms 
  - Average execution time: 1.97 ms
 

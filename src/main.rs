@@ -1,10 +1,10 @@
 use std::io::Read;
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use rayon::prelude::*;
 use indicatif::{ProgressBar, ProgressStyle};
 
 use std::fs;
-use std::time::{Duration, Instant};
+use std::time::{Instant};
 
 use clap::{Arg, App};
 
@@ -13,11 +13,11 @@ const OPCODES:&str= ".,[]<>+-";
 fn evaluate_vec(code:Vec<char>, out:bool){
     let bmap = build_brace_map(code.clone());
 
-    let mut cells:Vec<u8> = Vec::new();
-    cells.push(0);
+    let mut cells:Vec<u8> = Vec::with_capacity(30000);
     let mut codeptr:usize = 0;
     let mut cellptr:usize = 0;
 
+    cells.push(0);
     while codeptr < code.len(){
         let command = code[codeptr];
         match command {
@@ -28,8 +28,8 @@ fn evaluate_vec(code:Vec<char>, out:bool){
                 }
             },
             '<' => cellptr = if cellptr <= 0 {0} else {cellptr -1},
-            '+' => cells[cellptr] = if cells[cellptr] < 255 {cells[cellptr] + 1} else {0},
-            '-' => cells[cellptr] = if cells[cellptr] > 0 {cells[cellptr] - 1} else {255},
+            '+' => cells[cellptr] = cells[cellptr]+1 % 255,
+            '-' => cells[cellptr] = cells[cellptr]-1 % 255,
             '[' => {
                 if cells[cellptr] == 0 {
                     codeptr = bmap[&codeptr];
@@ -69,7 +69,11 @@ fn build_brace_map(code: Vec<char>) -> HashMap<usize,usize> {
     let mut brace_stack: Vec<usize> = Vec::new();
     let mut bmap: HashMap<usize, usize> = HashMap::new();
     
-    for (i, c) in code.iter().enumerate(){
+    for (i, c) in code.iter()
+        .enumerate()
+        .filter(|(i, &c)| c == '[' || c == ']')
+        .map(|(i, &c)| (i, c)){
+
         match c {
             '[' => brace_stack.push(i),
             ']' => {
@@ -90,14 +94,13 @@ fn execute(filename:&str, out:bool){
 
 fn execute_directly_to_vec(filename: &str, out:bool){
     let mut file = fs::File::open(filename).unwrap();
-    let bytes_count = 0i32;
     let mut s: Vec<u8> = Vec::with_capacity(file.metadata().unwrap().len() as usize);
     file.read_to_end(&mut s).unwrap();
-    let chars : Vec<char> = s.par_iter()
+    let chars : Vec<char> = s.iter()
         .map(|b| *b as char)
         .filter(|&c| OPCODES.contains(c)) 
         .collect::<Vec<_>>();
-    evaluate_vec(chars, false);
+    evaluate_vec(chars, out);
 }
 
 fn main() {
@@ -134,6 +137,7 @@ fn main() {
             time += duration;
         }
         bar.finish();
+
         println!("Executed {} {} times", filename, benchmark_num);
         println!("\tTotal execution time: {}ms", time);
         println!("\tAverage execution time: {}ms", time/benchmark_num as f64);

@@ -9,3 +9,5 @@ edition = "2018"
 rayon = "1.5"
 clap = "3.0.0-beta.4"
 indicatif = {version="*", features=["rayon"]}
+hashbrown = {version="0.3", features=["rayon"]}
+smallvec = "1.6.1"
