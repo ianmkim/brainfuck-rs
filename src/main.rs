@@ -12,7 +12,7 @@ use crate::shell::run_shell;
 
 fn main() {
     let matches = App::new("bfrs")
-        .version("2.0")
+        .version("3.0")
         .author("Ian Kim. <ian@ianmkim.com>")
         .about("A lightning fast brainfuck interpreter written in Rust")
         .arg(Arg::new("file")

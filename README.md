@@ -2,8 +2,17 @@
 A tiny & fast as fuck brainfuck interpreter written in Rust
 
 # Benchmark
-### Brainfuck-rs 2.0 (Rust)
+### Brainfuck-rs 3.0 (Rust)
 https://github.com/parvusvox/brainfuck-rs
+```
+cargo run examples/helloworld.bf --benchmark 1000
+```
+ - Total execution time: 399.15 ms
+ - Average execution time: 0.40 ms
+
+
+### Brainfuck-rs 2.0 (Rust)
+https://github.com/parvusvox/brainfuck-rs @ commit 47bc043e0354f2c46f845e976e5edb80927dc2b6
 ```
 cargo run examples/helloworld.bf --benchmark 1000
 ```
