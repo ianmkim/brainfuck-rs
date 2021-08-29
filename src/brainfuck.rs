@@ -5,10 +5,13 @@ use std::fs;
 
 const OPCODES:&str= ".,[]<>+-";
 
-pub fn evaluate_vec(code:Vec<char>, out:bool){
+pub fn evaluate_vec(code:Vec<char>, out:bool, tape:Option<Vec<u8>>) -> Option<Vec<u8>> {
     let bmap = build_brace_map(code.clone());
 
-    let mut cells:Vec<u8> = Vec::with_capacity(30000);
+    let mut cells:Vec<u8> = match tape {
+        Some(t) => t,
+        None => Vec::with_capacity(30000),
+    };
     let mut codeptr:usize = 0;
     let mut cellptr:usize = 0;
 
@@ -23,8 +26,8 @@ pub fn evaluate_vec(code:Vec<char>, out:bool){
                 }
             },
             '<' => cellptr = if cellptr <= 0 {0} else {cellptr -1},
-            '+' => cells[cellptr] = cells[cellptr]+1 % 255,
-            '-' => cells[cellptr] = cells[cellptr]-1 % 255,
+            '+' => cells[cellptr] = (cells[cellptr] as u32 +1) as u8,
+            '-' => cells[cellptr] = (cells[cellptr] as u32 -1) as u8,
             '[' => {
                 if cells[cellptr] == 0 {
                     codeptr = bmap[&codeptr];
@@ -46,12 +49,12 @@ pub fn evaluate_vec(code:Vec<char>, out:bool){
             },
             _ => {},
         } codeptr += 1;
-    }
+    } Some(cells)
 }
 
-pub fn evaluate_str(code:String, out:bool) {
+pub fn evaluate_str(code:String, out:bool, tape:Option<Vec<u8>>) -> Option<Vec<u8>>{
     let code = clean(code);
-    evaluate_vec(code, out);    
+    evaluate_vec(code, out, tape)
 }
 
 pub fn clean(code:String) -> Vec<char>{
@@ -84,7 +87,7 @@ pub fn execute(filename:&str, out:bool){
     let contents = fs::read_to_string(filename)
         .expect("cannot read file");
     let cleaned = clean(contents); 
-    evaluate_vec(cleaned, out);
+    evaluate_vec(cleaned, out, None);
 }
 
 pub fn execute_directly_to_vec(filename: &str, out:bool){
@@ -95,5 +98,5 @@ pub fn execute_directly_to_vec(filename: &str, out:bool){
         .map(|b| *b as char)
         .filter(|&c| OPCODES.contains(c)) 
         .collect::<Vec<_>>();
-    evaluate_vec(chars, out);
+    evaluate_vec(chars, out, None);
 }

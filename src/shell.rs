@@ -8,6 +8,7 @@ use std::io::{
 
 pub fn run_shell(){
     let mut input = String::new();
+    let mut tape:Option<Vec<u8>> = Some(Vec::with_capacity(30000));
     println!("brainfuck-rs v2.0.0");
     println!("Brainfuck Interactive Shell");
     loop {
@@ -15,9 +16,13 @@ pub fn run_shell(){
         stdout().flush();
         stdin().read_line(&mut input).unwrap();
         let command = input.trim();
-        match command {
-            "exit" => break,
-            _ => evaluate_str(String::from(command), true),
-        }
+        tape = match command {
+            "exit" => None,
+            _ => evaluate_str(String::from(command), true, tape),
+        };
+        match tape {
+            Some(_) => continue,
+            None => break,
+        };
     }    
 }
