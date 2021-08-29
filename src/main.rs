@@ -6,8 +6,7 @@ use std::time::{Instant};
 
 use clap::{Arg, App};
 use crate::brainfuck::{
-    execute,
-    execute_directly_to_vec
+    execute_directly_to_vec,
 };
 use crate::shell::run_shell;
 

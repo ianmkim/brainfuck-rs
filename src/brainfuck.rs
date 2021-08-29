@@ -26,8 +26,10 @@ pub fn evaluate_vec(code:Vec<char>, out:bool, tape:Option<Vec<u8>>) -> Option<Ve
                 }
             },
             '<' => cellptr = if cellptr <= 0 {0} else {cellptr -1},
-            '+' => cells[cellptr] = (cells[cellptr] as u32 +1) as u8,
-            '-' => cells[cellptr] = (cells[cellptr] as u32 -1) as u8,
+            // casting byte to i32 allows values outside of 0-255 range
+            // then casting as u8 allows the overflow to be handled gracefully
+            '+' => cells[cellptr] = (cells[cellptr] as i32 +1) as u8,
+            '-' => cells[cellptr] = (cells[cellptr] as i32 -1) as u8,
             '[' => {
                 if cells[cellptr] == 0 {
                     codeptr = bmap[&codeptr];
@@ -69,7 +71,7 @@ fn build_brace_map(code: Vec<char>) -> HashMap<usize,usize> {
     
     for (i, c) in code.iter()
         .enumerate()
-        .filter(|(i, &c)| c == '[' || c == ']')
+        .filter(|(_i, &c)| c == '[' || c == ']')
         .map(|(i, &c)| (i, c)){
 
         match c {
@@ -81,13 +83,6 @@ fn build_brace_map(code: Vec<char>) -> HashMap<usize,usize> {
             }, _ => {}
         }
     } bmap
-}
-
-pub fn execute(filename:&str, out:bool){
-    let contents = fs::read_to_string(filename)
-        .expect("cannot read file");
-    let cleaned = clean(contents); 
-    evaluate_vec(cleaned, out, None);
 }
 
 pub fn execute_directly_to_vec(filename: &str, out:bool){

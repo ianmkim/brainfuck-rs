@@ -13,7 +13,7 @@ pub fn run_shell(){
     println!("Brainfuck Interactive Shell");
     loop {
         print!("> ");
-        stdout().flush();
+        stdout().flush().unwrap();
         stdin().read_line(&mut input).unwrap();
         let command = input.trim();
         tape = match command {
